@@ -121,6 +121,32 @@ async function errorOf(call: () => Promise<unknown>): Promise<string> {
 }
 
 /**
+ * Whether this git build still reads the pre-1.5.6 legacy remote files
+ * (.git/branches/<name>, .git/remotes/<name>). Some builds ignore them, and
+ * some distro templates pre-create the directories at init, so the answer
+ * cannot be read off a single version number -- probe it once.
+ *
+ * Only plain-git CONTROLS depend on this. The lint's refusal of those files
+ * is the product behaviour under test and holds in both worlds.
+ */
+let legacyRemoteFilesHonored: boolean | null = null;
+function gitHonorsLegacyRemoteFiles(): boolean {
+  if (legacyRemoteFilesHonored === null) {
+    const probe = realpathSync(mkdtempSync(join(tmpdir(), 'pipo-git-lint-probe-')));
+    try {
+      setupGit(['init', '-q'], probe);
+      mkdirSync(join(probe, '.git', 'branches'), { recursive: true });
+      writeFileSync(join(probe, '.git', 'branches', 'origin'), 'https://example.invalid/probe.git\n');
+      legacyRemoteFilesHonored =
+        plainGit(['remote', 'get-url', 'origin'], { cwd: probe }).stdout.trim() === 'https://example.invalid/probe.git';
+    } finally {
+      rmSync(probe, { recursive: true, force: true });
+    }
+  }
+  return legacyRemoteFilesHonored;
+}
+
+/**
  * A fresh GitManager.init repository per test, for the describe blocks that
  * need one -- not the pure allowlist tests, which are most of the file and
  * would otherwise pay a `git init` and commit each.
@@ -673,12 +699,20 @@ describe('what else in .git is checked', () => {
   test('a legacy remotes/ file is refused (it defines origin with no config key)', async () => {
     setupGit(['init', '-q', '--bare', join(root, 'bare.git')], root);
     script('bare.git/hooks/post-receive', touch());
-    mkdirSync(join(repo, '.git', 'remotes'));
+    // A git whose templates pre-create .git/remotes must not break the setup.
+    mkdirSync(join(repo, '.git', 'remotes'), { recursive: true });
     writeFileSync(join(repo, '.git', 'remotes', 'origin'), `URL: ${join(root, 'bare.git')}\n`);
     const { ghm, lint } = managers();
     expect((await ghm.push(repo)).error).toContain('.git/remotes directory defines a remote outside the git config');
     expect(markerExists()).toBe(false);
     expect(!(await lint.inspect(repo)).ok).toBe(true);
+    if (!gitHonorsLegacyRemoteFiles()) {
+      // Newer git ignores the legacy file: plain git has no origin to read,
+      // so nothing can run it either. The refusal above is the behaviour that
+      // must hold in both worlds.
+      expect(plainGit(['remote', 'get-url', 'origin']).exitCode).not.toBe(0);
+      return;
+    }
     // CONTROL: plain git takes origin from the file, and pushing to it runs the
     // other repository's hook even with the daemon's hook pin.
     expect(plainGit(['remote', 'get-url', 'origin']).stdout.trim()).toBe(join(root, 'bare.git'));
@@ -687,12 +721,18 @@ describe('what else in .git is checked', () => {
   });
 
   test('a legacy branches/ file is refused, an empty branches/ is not', async () => {
-    mkdirSync(join(repo, '.git', 'branches'));
+    // A git whose templates pre-create .git/branches at init must not break
+    // the setup (bare mkdirSync threw EEXIST there).
+    mkdirSync(join(repo, '.git', 'branches'), { recursive: true });
     const lint = new GitConfigLint();
     expect(await lint.inspect(repo)).toEqual({ ok: true });
     writeFileSync(join(repo, '.git', 'branches', 'origin'), 'https://example.invalid/r.git\n');
     const verdict = await lint.inspect(repo);
     expect(!verdict.ok && verdict.summary).toBe('its .git/branches directory defines a remote outside the git config');
+    if (!gitHonorsLegacyRemoteFiles()) {
+      expect(plainGit(['remote', 'get-url', 'origin']).exitCode).not.toBe(0);
+      return;
+    }
     expect(plainGit(['remote', 'get-url', 'origin']).stdout.trim()).toBe('https://example.invalid/r.git');
   });
 
