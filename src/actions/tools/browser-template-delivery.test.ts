@@ -70,7 +70,10 @@ describe.skipIf(!chromiumExe)('webapp template delivery via browser tools (integ
     // autoLaunch off: if this browser dies, fail rather than start a headed one.
     ctrl = new BrowserController(chromium.port, undefined, { autoLaunch: false });
     tools = toolMap(ctrl);
-  }, 60_000);
+    // Worst case: two launch attempts (45s port + 30s CDP each) plus the
+    // watchdog's close grace -- roughly 166s. 60s used to cut a slow but
+    // healthy boot off mid-flight (the flake that failed main).
+  }, 180_000);
 
   afterAll(async () => {
     try { await ctrl?.disconnect(); } catch { /* already gone */ }

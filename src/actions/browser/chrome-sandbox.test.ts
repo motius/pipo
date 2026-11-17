@@ -145,7 +145,10 @@ describe.skipIf(!exe)('launchChrome on this host (#521, real headless Chromium)'
     }
     rmSync(profile, { recursive: true, force: true });
     await watch?.release();
-  });
+    // stopChrome + the up-to-5s dangling-process wait + watchBrowser's up-to
+    // 8s release grace can legitimately take ~18s; the bun default (5s) cut
+    // teardown off mid-kill on a loaded runner (the (unnamed) hook flake).
+  }, 60_000);
 
   function profileProcesses(): number[] {
     return readdirSync('/proc').filter(d => /^\d+$/.test(d)).map(Number)
@@ -185,12 +188,26 @@ describe.skipIf(!exe)('launchChrome on this host (#521, real headless Chromium)'
 
     if (decision.sandbox) {
       // The sandbox is really on: renderers of this browser run under
-      // seccomp-bpf (Seccomp: 2). With --no-sandbox they report 0.
-      let renderers: number[] = [];
-      for (let i = 0; i < 50 && renderers.length === 0; i++) {
-        renderers = profileProcesses().filter(pid => argv(pid).includes('--type=renderer'));
-        if (renderers.length === 0) await Bun.sleep(100);
+      // seccomp-bpf (Seccomp: 2). With --no-sandbox they report 0. A renderer
+      // installs its filter a moment after the process exists, so on a loaded
+      // host the first renderers seen can still read Seccomp: 0 -- keep
+      // sampling until every renderer found is sealed. A genuinely unsealed
+      // renderer never seals, so the final assert still fails the run.
+      let sealed = false;
+      for (let i = 0; i < 100 && !sealed; i++) {
+        const found = profileProcesses().filter(pid => argv(pid).includes('--type=renderer'));
+        if (found.length > 0) {
+          sealed = found.every((pid) => {
+            try {
+              return /^Seccomp:\s+2$/m.test(readFileSync(`/proc/${pid}/status`, 'utf-8'));
+            } catch {
+              return false; // exited mid-sample; resample
+            }
+          });
+        }
+        if (!sealed) await Bun.sleep(100);
       }
+      const renderers = profileProcesses().filter(pid => argv(pid).includes('--type=renderer'));
       expect(renderers.length).toBeGreaterThan(0);
       for (const pid of renderers) {
         const status = readFileSync(`/proc/${pid}/status`, 'utf-8');

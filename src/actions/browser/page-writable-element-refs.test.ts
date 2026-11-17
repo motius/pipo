@@ -76,13 +76,15 @@ describe.skipIf(!chromiumExe)('page-writable element refs (#592, integration)', 
       },
     });
     base = `http://127.0.0.1:${server.port}/`;
-  });
+    // Two launch attempts plus the close grace can take ~166s on a loaded
+    // runner; the bun default (5s) cannot even boot one attempt.
+  }, 180_000);
 
   afterAll(async () => {
     await browser?.disconnect();
     server?.stop(true);
     await chromium?.close();
-  });
+  }, 60_000);
 
   /** Snapshot, and return the snapshot id of the element with this data-testid. */
   const idOf = async (testid: string): Promise<number> => {

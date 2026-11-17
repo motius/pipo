@@ -184,11 +184,42 @@ export function processAlive(pid: number): boolean {
 
 /**
  * Start a headless Chromium on a free CDP port and wait until it answers.
- * `startupMs` bounds the whole start: on a loaded CI runner a headless
+ * `startupMs` bounds the port phase: on a loaded CI runner a headless
  * Chromium can take well over 15s to come up. `executable` overrides the
  * detected browser (tests use it to start one that dies at once).
+ *
+ * Two independent hardenings against the loaded-runner flake that failed
+ * main (86a32c5): the CDP wait gets its own budget instead of what is left
+ * of the startup one -- the port file can land early while the HTTP endpoint
+ * still needs seconds -- and a boot that merely outlived its budget is
+ * retried on a fresh browser, profile and port (`attempts`, default 2). A
+ * browser that died at startup is never retried: bad CHROME_PATH or a
+ * missing library is deterministic, and retrying it would only multiply the
+ * wait while hiding the cause.
  */
 export async function launchTestChromium(opts: {
+  profilePrefix: string;
+  startupMs?: number;
+  executable?: string;
+  /** Whole-launch retries for a boot that outlived its budget. Default 2. */
+  attempts?: number;
+}): Promise<TestChromium> {
+  const total = Math.max(1, opts.attempts ?? 2);
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await launchOneAttempt(opts);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      const transient =
+        msg.includes('never wrote DevToolsActivePort') ||
+        msg.includes('CDP did not come up') ||
+        msg.includes('did not report a pid');
+      if (!transient || attempt >= total) throw err;
+    }
+  }
+}
+
+async function launchOneAttempt(opts: {
   profilePrefix: string;
   startupMs?: number;
   executable?: string;
@@ -259,7 +290,9 @@ export async function launchTestChromium(opts: {
     });
     if (!port) throw new Error('Chromium never wrote DevToolsActivePort');
 
-    const up = await waitFor(deadline, async () => {
+    // Fresh budget, not the leftover of the startup one: on a loaded runner
+    // the port file lands early while the HTTP endpoint needs seconds more.
+    const up = await waitFor(Date.now() + 30_000, async () => {
       if (!processAlive(pid)) throw died();
       try {
         const res = await fetch(`http://127.0.0.1:${port}/json/version`, { signal: AbortSignal.timeout(1000) });
