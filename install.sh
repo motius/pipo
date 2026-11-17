@@ -400,6 +400,32 @@ main() {
   echo -e "  Start the daemon and finish setup in your browser:"
   echo -e "    ${CYAN}pipo start${RESET}"
   echo -e "    ${DIM}→ http://localhost:1846 (dashboard guides you through LLM, voice, and profile)${RESET}"
+  echo ""
+
+  # ── One-click start ──────────────────────────────────────────────
+  # One command = installed AND running. The daemon starts here unless the
+  # caller opted out (PIPO_NO_START=1) or nothing is attached to watch it
+  # (provisioning scripts, CI). `--detach` spawns the background daemon with
+  # its log file and returns at once, so the installer never blocks.
+  if [ "${PIPO_NO_START:-0}" = "1" ]; then
+    echo -e "  ${DIM}PIPO_NO_START=1 -- skipping the automatic start.${RESET}"
+  elif [ -t 1 ]; then
+    echo -e "${CYAN}${BOLD}Starting P.I.P.O...${RESET}"
+    if "$bun_bin/pipo" start --detach; then
+      echo ""
+      echo -e "  ${GREEN}${BOLD}P.I.P.O. is running.${RESET} Finish setup in your browser:"
+      echo -e "    ${CYAN}http://localhost:1846${RESET}"
+      echo -e "    ${DIM}(dashboard guides you through LLM, voice, and profile)${RESET}"
+    else
+      echo ""
+      warn "Automatic start failed (usually a missing dependency). Run it yourself for the full output:"
+      echo -e "    ${CYAN}pipo start${RESET}"
+    fi
+  else
+    echo -e "  ${DIM}No terminal attached -- install only. Start it when ready:${RESET}"
+    echo -e "    ${CYAN}pipo start${RESET}"
+    echo -e "    ${DIM}→ http://localhost:1846 (dashboard guides you through LLM, voice, and profile)${RESET}"
+  fi
 }
 
 main "$@"

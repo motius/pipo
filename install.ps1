@@ -101,9 +101,10 @@ if ($LASTEXITCODE -ne 0) {
 # ── 4. Next steps ───────────────────────────────────────────────────
 Write-Host ""
 Write-Host "  ============== Next steps ==============" -ForegroundColor Cyan
-Write-Host "  1. Start the brain (inside WSL):"
+Write-Host "  1. The brain is already running inside WSL (the installer starts it)."
+Write-Host "     Open http://localhost:1846 and finish setup."
+Write-Host "     Not running, or you set PIPO_NO_START=1? Start it:"
 Write-Host "       wsl bash -lc `"pipo start`""
-Write-Host "     then open http://localhost:1846 and finish setup."
 Write-Host ""
 Write-Host "  2. Desktop sidecar (tray, overlay, hotkeys on Windows itself):"
 Write-Host "       download and run  $SidecarUrl"
