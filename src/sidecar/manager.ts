@@ -432,6 +432,75 @@ export class SidecarManager implements Service {
     return { token, sidecar };
   }
 
+  /**
+   * Automatically ensure a local desktop sidecar is enrolled and ~/.pipo/sidecar.yaml
+   * has a valid enrollment token so users experience seamless zero-friction setup.
+   */
+  async ensureLocalEnrollment(name = 'desktop'): Promise<string | null> {
+    try {
+      const sidecarYamlPath = path.join(this.dataDir, 'sidecar.yaml');
+      let existingToken: string | null = null;
+
+      if (existsSync(sidecarYamlPath)) {
+        try {
+          const content = await Bun.file(sidecarYamlPath).text();
+          const match = content.match(/token:\s*["']?([^\s"'\r\n]+)["']?/);
+          if (match && match[1] && match[1].length > 20) {
+            existingToken = match[1];
+          }
+        } catch {}
+      }
+
+      const enrolled = this.listEnrolled();
+      let token = existingToken;
+
+      if (!token || enrolled.length === 0) {
+        const res = await enrollDevice(this.dataDir, this.brainUrl, name, {
+          onExisting: 'upsert',
+          rotate: false,
+          keys: {
+            privateKey: this.privateKey,
+            publicKey: this.publicKey!,
+            publicJwk: this.publicJwk,
+            keyId: this.keyId,
+          },
+        });
+        token = res.token;
+      }
+
+      // If sidecar.yaml doesn't exist or is missing token, write it
+      if (!existingToken && token) {
+        const defaultYaml = `config_version: 2
+token: ${token}
+brain: ""
+capabilities:
+    - terminal
+    - filesystem
+    - clipboard
+    - screenshot
+    - system_info
+    - awareness
+    - desktop
+    - browser
+    - ocr
+    - windows
+    - pebble
+    - sub_pebble
+    - file_watch
+    - processes
+    - notifications
+`;
+        await Bun.write(sidecarYamlPath, defaultYaml);
+        console.log(`[SidecarManager] Auto-enrolled local sidecar and wrote configuration to ${sidecarYamlPath}`);
+      }
+
+      return token;
+    } catch (err) {
+      console.warn('[SidecarManager] Auto-enrollment check non-fatal error:', err);
+      return null;
+    }
+  }
+
   // --------------- Registry (DB queries) ---------------
 
   /** Get all enrolled sidecars with connection state */

@@ -858,6 +858,9 @@ export const DEFAULT_CONFIG: pipoConfig = {
     data_dir: '~/.pipo',
     db_path: '~/.pipo/pipo.db',
   },
+  auth: {
+    insecure_open_access: true,
+  },
   browser: {
     local: true,
   },

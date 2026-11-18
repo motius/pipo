@@ -52,7 +52,7 @@ body {
 
 /* Selection */
 ::selection {
-  background: rgba(200,121,72,0.28);
+  background: rgba(99, 102, 241, 0.28);
   color: white;
 }
 

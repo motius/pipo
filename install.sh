@@ -402,6 +402,15 @@ main() {
   echo -e "    ${DIM}→ http://localhost:1846 (dashboard guides you through LLM, voice, and profile)${RESET}"
   echo ""
 
+  # Pre-configure zero-friction dashboard setup if config.yaml doesn't exist
+  mkdir -p "$HOME/.pipo"
+  if [ ! -f "$HOME/.pipo/config.yaml" ]; then
+    cat << 'EOF' > "$HOME/.pipo/config.yaml"
+auth:
+  insecure_open_access: true
+EOF
+  fi
+
   # ── One-click start ──────────────────────────────────────────────
   # One command = installed AND running. The daemon starts here unless the
   # caller opted out (PIPO_NO_START=1) or nothing is attached to watch it

@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <!-- Pipo circular brand mark: a champagne signal orb with a lowercase p. -->
-  <circle cx="16" cy="16" r="14" fill="#15181D"/>
-  <circle cx="16" cy="16" r="12.5" fill="#D4B074"/>
-  <circle cx="12" cy="10" r="4" fill="#EFCD93" opacity=".7"/>
-  <text x="16" y="22" text-anchor="middle" font-size="17" font-family="Arial, sans-serif" font-weight="700" fill="#15181D">p</text>
+  <!-- Pipo circular brand mark: circular electric indigo signal orb with a lowercase p. -->
+  <circle cx="16" cy="16" r="14" fill="#0A0C10"/>
+  <circle cx="16" cy="16" r="12.5" fill="#6366F1"/>
+  <circle cx="12" cy="10" r="4.5" fill="#A5B4FC" opacity=".8"/>
+  <text x="16" y="22" text-anchor="middle" font-size="17" font-family="Arial, sans-serif" font-weight="700" fill="#FFFFFF">p</text>
 </svg>

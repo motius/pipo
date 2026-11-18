@@ -21,13 +21,13 @@ package brand
 const TokensCSS = `
   :root {
     color-scheme: light dark;
-    --bg:#0D0E10; --raise:#171A1E; --panel:#111316; --panel2:#1B1F23;
-    --rule:#394047; --rule2:#252B30; --rule-hi:#596169;
-    --ink:#EEF1F3; --ink2:#999EA5; --ink3:#798690; --faint:#596169;
-    --listen:#C9A66B; --speak:#B7C8BC; --hold:#E1C58D; --ok:#9BBFA6;
-    --listen-tx:#D1AF72; --speak-tx:#B7C8BC; --hold-tx:#E1C58D; --ok-tx:#9BBFA6;
-    --sh-sm:0 1px 2px rgba(20,30,45,.06),0 1px 1px rgba(20,30,45,.04);
-    --sh-md:0 2px 6px rgba(20,30,45,.06),0 10px 24px -10px rgba(20,30,45,.18);
+    --bg:#090B10; --raise:#141824; --panel:#0E121B; --panel2:#1B2232;
+    --rule:#232B3E; --rule2:#181E2C; --rule-hi:#3B4764;
+    --ink:#F8FAFC; --ink2:#94A3B8; --ink3:#64748B; --faint:#475569;
+    --listen:#6366F1; --speak:#06B6D4; --hold:#F59E0B; --ok:#10B981;
+    --listen-tx:#818CF8; --speak-tx:#38BDF8; --hold-tx:#FBBF24; --ok-tx:#34D399;
+    --sh-sm:0 1px 3px rgba(0,0,0,.45);
+    --sh-md:0 10px 24px -10px rgba(0,0,0,.65);
     --sans:-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
     --mono:'IBM Plex Mono', ui-monospace, "SF Mono", Menlo, monospace;
     --corner:14px; --corner-sm:9px;
@@ -35,16 +35,16 @@ const TokensCSS = `
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg:#0D0E10; --raise:#171A1E; --panel:#111316; --panel2:#1B1F23;
-      --rule:#394047; --rule2:#252B30; --rule-hi:#596169;
-      --ink:#EEF1F3; --ink2:#999EA5; --ink3:#798690; --faint:#596169;
-      --listen-tx:#D1AF72; --speak-tx:#B7C8BC; --hold-tx:#E1C58D; --ok-tx:#9BBFA6;
-      --sh-sm:0 1px 2px rgba(0,0,0,.4);
-      --sh-md:0 10px 24px -10px rgba(0,0,0,.6);
+      --bg:#090B10; --raise:#141824; --panel:#0E121B; --panel2:#1B2232;
+      --rule:#232B3E; --rule2:#181E2C; --rule-hi:#3B4764;
+      --ink:#F8FAFC; --ink2:#94A3B8; --ink3:#64748B; --faint:#475569;
+      --listen-tx:#818CF8; --speak-tx:#38BDF8; --hold-tx:#FBBF24; --ok-tx:#34D399;
+      --sh-sm:0 1px 3px rgba(0,0,0,.45);
+      --sh-md:0 10px 24px -10px rgba(0,0,0,.65);
     }
   }
   * { box-sizing: border-box; }
-  ::selection { background: rgba(230,59,46,.24); }
+  ::selection { background: rgba(99,102,241,.28); }
   body {
     margin: 0; font-family: var(--sans);
     background: var(--bg); color: var(--ink);
@@ -52,7 +52,7 @@ const TokensCSS = `
   }
 `
 
-// PebbleCSS is the Pebble (the brand's one living object — one per screen),
+// PebbleCSS is the Pebble (the brand's circular signal lens — one per screen),
 // its bloom, and the wordmark. Markup contract:
 //
 //	<span class="bdrop"><span class="in"></span><span class="ring"></span></span>
@@ -63,39 +63,39 @@ const TokensCSS = `
 const PebbleCSS = `
   .bdrop {
     display: block; position: relative;
-    border-radius: 50%; transform: none;
-    background: rgba(201,166,107,.18); border: .5px solid rgba(201,166,107,.55);
+    border-radius: 50% !important; aspect-ratio: 1 / 1; transform: none;
+    background: rgba(99,102,241,.18); border: .5px solid rgba(99,102,241,.55);
     box-shadow: inset 1.5px 1.5px 1.5px rgba(255,255,255,.9), 0 6px 18px -4px rgba(20,30,45,.3);
   }
   @media (prefers-color-scheme: dark) {
     .bdrop {
-      border-color: rgba(255,255,255,.4);
+      border-color: rgba(99,102,241,.6);
       box-shadow: inset 1.5px 1.5px 1.5px rgba(255,255,255,.55), 0 8px 22px -4px rgba(0,0,0,.6);
     }
   }
   .bdrop .in {
-    position: absolute; inset: 0; border-radius: inherit;
-    background: radial-gradient(circle at 35% 25%, #F4DCA8, #C9A66B 48%, #3A2A18);
+    position: absolute; inset: 0; border-radius: 50% !important;
+    background: radial-gradient(circle at 35% 25%, #A5B4FC, #6366F1 48%, #312E81);
     animation: brS 2.6s var(--ease) infinite;
   }
   .bdrop .ring {
-    position: absolute; inset: -2px; border-radius: inherit; opacity: 0;
+    position: absolute; inset: -2px; border-radius: 50% !important; opacity: 0;
     background: conic-gradient(from 0deg, transparent 0 200deg, rgba(255,255,255,.98) 300deg, transparent 360deg);
     -webkit-mask: radial-gradient(circle, transparent 38%, #000 46%, #000 56%, transparent 64%);
     mask: radial-gradient(circle, transparent 38%, #000 46%, #000 56%, transparent 64%);
   }
-  .bdrop.s-think .in { background: radial-gradient(circle at 50% 40%, #fff, #e6eaef 70%); animation: none; }
+  .bdrop.s-think .in { background: radial-gradient(circle at 50% 40%, #fff, #38bdf8 70%); animation: none; }
   .bdrop.s-think .ring { opacity: .95; animation: spin 3.4s linear infinite; }
-  .bdrop.s-done .in { background: radial-gradient(circle at 50% 40%, #56c98a, #2fa45e 60%, #1f7e45); }
+  .bdrop.s-done .in { background: radial-gradient(circle at 50% 40%, #34d399, #10b981 60%, #065f46); }
   .bdrop.s-err .in { animation: brS 1.2s var(--ease) infinite; }
   @keyframes brS { 0%,100% { opacity:.62; transform: scale(.96); } 50% { opacity:1; transform: scale(1.05); } }
   @keyframes spin { to { transform: rotate(360deg); } }
   .bbloom {
-    position: absolute; border-radius: 50%;
-    background: radial-gradient(circle, rgba(230,59,46,.24), transparent 66%);
+    position: absolute; border-radius: 50% !important;
+    background: radial-gradient(circle, rgba(99,102,241,.24), transparent 66%);
     filter: blur(10px); pointer-events: none;
   }
-  .bbloom.ok { background: radial-gradient(circle, rgba(47,164,94,.26), transparent 66%); }
+  .bbloom.ok { background: radial-gradient(circle, rgba(16,185,129,.26), transparent 66%); }
   .word { font-weight: 700; letter-spacing: -.045em; color: var(--ink); }
   .word .u { color: var(--ink3); }
   @media (prefers-reduced-motion: reduce) {

@@ -9,12 +9,13 @@
   --sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
   --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
-  --listen: #C9A66B; --speak: #B7C8BC; --hold: #E1C58D; --ok: #9BBFA6;
+  /* Modern vibrant state chroma */
+  --listen: #6366F1; --speak: #06B6D4; --hold: #F59E0B; --ok: #10B981;
 
-  /* neutrals for the summoned Talk panel (light glass) */
-  --bg: #11100F; --raise: #1C1A17; --panel: #171513; --rule: #4A4238; --rule2: #302B25;
-  --ink: #F4EEE3; --ink2: #BEB3A1; --ink3: #968B7B;
-  --listen-tx: #D1AF72; --speak-tx: #B7C8BC;
+  /* Neutrals for the summoned Talk panel (sleek glass) */
+  --bg: #090B10; --raise: #141824; --panel: #0E121B; --rule: #232B3E; --rule2: #181E2C;
+  --ink: #F8FAFC; --ink2: #94A3B8; --ink3: #64748B;
+  --listen-tx: #818CF8; --speak-tx: #38BDF8;
 
   --corner: 14px; --corner-sm: 9px;
   --ease: cubic-bezier(.2, .7, .2, 1);
@@ -49,39 +50,53 @@ body.pebble-dev-backdrop::before {
 }
 
 /* ============================================================
-   The pebble — purely visual, never intercepts pointer events.
+   The pebble — fixed circular lens docked at the bottom-right
    ============================================================ */
 
 .pebble {
-  position: fixed; top: 0; left: 0; z-index: 100;
-  pointer-events: none;
-  transform: translate(-50%, -50%);
-  width: 26px; height: 26px;
-  will-change: transform;
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  top: auto;
+  left: auto;
+  z-index: 1000;
+  pointer-events: auto;
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  border-radius: 50% !important;
+  aspect-ratio: 1 / 1;
+  transform: none;
+  will-change: transform, box-shadow;
+  transition: transform 180ms var(--ease), box-shadow 180ms var(--ease);
+}
+.pebble:hover {
+  transform: scale(1.08);
 }
 
-/* ── the round signal pebble ── */
+/* ── the true circular signal pebble ── */
 .gd {
   position: absolute; inset: 0;
-  border-radius: 50%;
+  border-radius: 50% !important;
+  aspect-ratio: 1 / 1;
   transform: none;
   overflow: hidden;
-  background: rgba(200,121,72,.18);
-  border: .5px solid rgba(200,121,72,.55);
-  -webkit-backdrop-filter: blur(2px) brightness(1.05) saturate(1.18);
-  backdrop-filter: blur(2px) brightness(1.05) saturate(1.18);
+  background: rgba(99, 102, 241, .15);
+  border: 1.5px solid rgba(99, 102, 241, .45);
+  -webkit-backdrop-filter: blur(8px) brightness(1.08) saturate(1.2);
+  backdrop-filter: blur(8px) brightness(1.08) saturate(1.2);
   box-shadow:
-    inset 1px 1px 1.5px rgba(255,255,255,.95),
-    inset -1px -1px 2px rgba(255,255,255,.4),
-    0 3px 10px -2px rgba(20,30,45,.4);
-  transition: box-shadow 240ms var(--ease);
+    inset 1px 1px 2px rgba(255,255,255,.8),
+    inset -1px -1px 2px rgba(0,0,0,.3),
+    0 8px 24px -4px rgba(99, 102, 241, .35);
+  transition: box-shadow 240ms var(--ease), border-color 240ms var(--ease);
 }
 .gd .in {
-  position: absolute; inset: 0; border-radius: inherit;
+  position: absolute; inset: 0; border-radius: 50% !important;
   opacity: 0;
 }
 .gd .ring {
-  position: absolute; inset: -2px; border-radius: inherit; opacity: 0;
+  position: absolute; inset: -2px; border-radius: 50% !important; opacity: 0;
   background: conic-gradient(from 0deg, transparent 0 200deg, rgba(255,255,255,.98) 300deg, transparent 360deg);
   -webkit-mask: radial-gradient(circle, transparent 36%, #000 44%, #000 58%, transparent 66%);
   mask: radial-gradient(circle, transparent 36%, #000 44%, #000 58%, transparent 66%);
@@ -94,78 +109,82 @@ body.pebble-dev-backdrop::before {
 
 /* ── states (parent class set by the component) ── */
 
-/* idle — clear glass, a faint neutral presence */
+/* idle — calm obsidian lens */
 .pebble--idle .gd .in {
-  opacity: .42; animation: pb-idle 4s ease-in-out infinite;
-  background: radial-gradient(circle, rgba(120,128,138,.6), transparent 68%);
+  opacity: .35; animation: pb-idle 4s ease-in-out infinite;
+  background: radial-gradient(circle, rgba(148, 163, 184, .5), transparent 70%);
 }
 
-/* listening — red */
+/* listening — electric indigo */
 .pebble--listening .gd .in {
   opacity: 1; animation: pb-breathe 1.4s infinite;
-  background: radial-gradient(circle, rgba(209,175,114,.98), rgba(209,175,114,.28) 55%, transparent 72%);
+  background: radial-gradient(circle, rgba(99, 102, 241, .98), rgba(99, 102, 241, .32) 55%, transparent 72%);
 }
 .pebble--listening .gd {
-  box-shadow: inset 1px 1px 1.5px rgba(255,255,255,.95), inset -1px -1px 2px rgba(255,255,255,.4),
-              0 4px 14px -3px rgba(209,175,114,.55), 0 2px 6px rgba(20,16,12,.45);
+  border-color: rgba(99, 102, 241, .85);
+  box-shadow: inset 1px 1px 2px rgba(255,255,255,.9), 0 0 24px rgba(99, 102, 241, .6);
 }
 
 /* thinking — spinning ring */
 .pebble--thinking .gd .ring { opacity: 1; animation: pb-spin 1.4s linear infinite; }
+.pebble--thinking .gd {
+  border-color: rgba(56, 189, 248, .8);
+  box-shadow: inset 1px 1px 2px rgba(255,255,255,.9), 0 0 20px rgba(56, 189, 248, .55);
+}
 
-/* speaking — blue */
+/* speaking — vibrant sky cyan */
 .pebble--speaking .gd .in {
   opacity: 1; animation: pb-breathe-scale 1.6s infinite;
-  background: radial-gradient(circle, rgba(183,200,188,1), rgba(183,200,188,.42) 48%, transparent 72%);
+  background: radial-gradient(circle, rgba(56, 189, 248, .98), rgba(6, 182, 212, .38) 50%, transparent 72%);
 }
 .pebble--speaking .gd {
-  box-shadow: inset 1px 1px 1.5px rgba(255,255,255,.95), inset -1px -1px 2px rgba(255,255,255,.4),
-              0 4px 14px -3px rgba(183,200,188,.48), 0 2px 6px rgba(20,16,12,.45);
+  border-color: rgba(56, 189, 248, .85);
+  box-shadow: inset 1px 1px 2px rgba(255,255,255,.9), 0 0 24px rgba(56, 189, 248, .6);
 }
 
-/* working — blue, steady (running / executing) */
+/* working — steady electric blue */
 .pebble--working .gd .in {
   opacity: 1; animation: pb-breathe 2.4s infinite;
-  background: radial-gradient(circle, rgba(183,200,188,.95), rgba(183,200,188,.34) 52%, transparent 72%);
+  background: radial-gradient(circle, rgba(99, 102, 241, .95), rgba(56, 189, 248, .35) 52%, transparent 72%);
 }
 .pebble--working .gd {
-  box-shadow: inset 1px 1px 1.5px rgba(255,255,255,.95), inset -1px -1px 2px rgba(255,255,255,.4),
-              0 4px 14px -3px rgba(183,200,188,.42), 0 2px 6px rgba(20,16,12,.45);
+  border-color: rgba(99, 102, 241, .8);
+  box-shadow: inset 1px 1px 2px rgba(255,255,255,.9), 0 0 20px rgba(99, 102, 241, .5);
 }
 
-/* asking — amber, the attention pulse (waiting on your authority/approval) */
+/* asking — amber pulse */
 .pebble--asking .gd .in {
   opacity: 1; animation: pb-breathe 2s infinite;
-  background: radial-gradient(circle, rgba(225,197,141,.94), rgba(225,197,141,.28) 55%, transparent 72%);
+  background: radial-gradient(circle, rgba(245, 158, 11, .95), rgba(245, 158, 11, .3) 55%, transparent 72%);
 }
 .pebble--asking .gd { animation: pb-askglow 2s var(--ease) infinite; }
 @keyframes pb-askglow {
-  0%,100% { box-shadow: inset 1px 1px 1.5px rgba(255,255,255,.95), 0 0 0 0 rgba(234,164,14,.5), 0 3px 10px -2px rgba(20,30,45,.4); }
-  50%     { box-shadow: inset 1px 1px 1.5px rgba(255,255,255,.95), 0 0 0 7px rgba(234,164,14,0), 0 3px 10px -2px rgba(20,30,45,.4); }
+  0%,100% { box-shadow: inset 1px 1px 2px rgba(255,255,255,.9), 0 0 0 0 rgba(245, 158, 11, .6), 0 8px 24px rgba(245, 158, 11, .3); }
+  50%     { box-shadow: inset 1px 1px 2px rgba(255,255,255,.9), 0 0 0 10px rgba(245, 158, 11, 0), 0 8px 24px rgba(245, 158, 11, .3); }
 }
 
-/* done — green flash, one-shot */
+/* done — vibrant emerald flash */
 .pebble--done .gd .in {
   opacity: 0; animation: pb-done .9s var(--ease) both;
-  background: radial-gradient(circle, rgba(47,164,94,.95), rgba(47,164,94,.3) 55%, transparent 72%);
+  background: radial-gradient(circle, rgba(16, 185, 129, .95), rgba(16, 185, 129, .35) 55%, transparent 72%);
 }
 @keyframes pb-done { 0%{opacity:0;transform:scale(.55)} 30%{opacity:1} 100%{opacity:0;transform:scale(1.18)} }
 .pebble--done .gd {
-  box-shadow: inset 1px 1px 1.5px rgba(255,255,255,.95), inset -1px -1px 2px rgba(255,255,255,.4),
-              0 4px 14px -3px rgba(47,164,94,.5), 0 2px 6px rgba(20,30,45,.3);
+  border-color: rgba(16, 185, 129, .85);
+  box-shadow: inset 1px 1px 2px rgba(255,255,255,.9), 0 0 22px rgba(16, 185, 129, .55);
 }
 
 /* muted — quiet, no chroma, dashed edge */
 .pebble--muted .gd {
-  background: rgba(225,230,238,.34);
-  border: .5px dashed rgba(120,128,138,.85);
-  -webkit-backdrop-filter: blur(2px) saturate(.6);
-  backdrop-filter: blur(2px) saturate(.6);
-  box-shadow: inset 1px 1px 1.5px rgba(255,255,255,.7), 0 3px 10px -2px rgba(20,30,45,.35);
+  background: rgba(15, 23, 42, .4);
+  border: 1px dashed rgba(148, 163, 184, .6);
+  -webkit-backdrop-filter: blur(4px) saturate(.6);
+  backdrop-filter: blur(4px) saturate(.6);
+  box-shadow: inset 1px 1px 2px rgba(255,255,255,.2), 0 4px 12px rgba(0,0,0,.4);
 }
 .pebble--muted .gd .in {
   opacity: .5;
-  background: repeating-linear-gradient(45deg, rgba(120,128,138,.5) 0 2px, transparent 2px 5px);
+  background: repeating-linear-gradient(45deg, rgba(148, 163, 184, .4) 0 2px, transparent 2px 5px);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -176,27 +195,33 @@ body.pebble-dev-backdrop::before {
 }
 
 /* ============================================================
-   Summoned Talk bubble — light glass panel
+   Summoned Talk bubble — sleek glass panel
    ============================================================ */
 
 .pebble-thread {
-  position: fixed; top: 0; left: 0; z-index: 99;
+  position: fixed;
+  bottom: 86px;
+  right: 32px;
+  top: auto;
+  left: auto;
+  z-index: 999;
   pointer-events: auto;
-  width: 320px;
-  transform: translate(-50%, -100%);
-  background: color-mix(in srgb, var(--raise) 80%, transparent);
+  width: 340px;
+  max-width: calc(100vw - 64px);
+  transform: none;
+  background: color-mix(in srgb, var(--raise) 88%, transparent);
   -webkit-backdrop-filter: blur(18px) saturate(1.4);
   backdrop-filter: blur(18px) saturate(1.4);
-  border: .5px solid var(--rule);
+  border: 1px solid var(--rule);
   border-radius: var(--corner);
-  padding: 13px 15px 12px;
-  box-shadow: inset 0 1px 1px rgba(255,255,255,.6), 0 18px 40px -16px rgba(20,30,45,.45);
+  padding: 14px 16px 13px;
+  box-shadow: inset 0 1px 1px rgba(255,255,255,.15), 0 20px 45px -12px rgba(0,0,0,.65);
   animation: pb-bubble-in 240ms var(--ease);
-  will-change: transform;
+  will-change: transform, opacity;
 }
 @keyframes pb-bubble-in {
-  from { opacity: 0; transform: translate(-50%, calc(-100% + 6px)); }
-  to   { opacity: 1; transform: translate(-50%, -100%); }
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .thread-header {

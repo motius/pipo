@@ -41,15 +41,15 @@
   --sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
   --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
-  /* ── state hues · the only chroma in the system ── */
-  --listen: #C9A66B;   /* champagne · attention */
-  --speak:  #B7C8BC;   /* sage · running */
-  --hold:   #E1C58D;   /* ivory gold · awaiting your yes */
-  --ok:     #9BBFA6;   /* soft green · done */
+  /* ── state hues · modern vibrant chroma ── */
+  --listen: #6366F1;   /* electric indigo · attention */
+  --speak:  #06B6D4;   /* vivid cyan · running */
+  --hold:   #F59E0B;   /* amber gold · awaiting your yes */
+  --ok:     #10B981;   /* fresh emerald · done */
 
-  /* ── dark-scene exterior (always dark: loading, brand moments) ── */
-  --x-bg: #0B0D10; --x-panel: #14171C; --x-rule: #232730;
-  --x-ink: #E7EAEE; --x-ink2: #AEB4BD; --x-dim: #79808A;
+  /* ── dark-scene exterior ── */
+  --x-bg: #07080B; --x-panel: #0E121A; --x-rule: #1E2536;
+  --x-ink: #F8FAFC; --x-ink2: #94A3B8; --x-dim: #64748B;
 
   /* ── geometry & motion ── */
   --corner: 14px;
@@ -82,26 +82,26 @@
 /* ════════════════ LIGHT (optional) ════════════════ */
 :root,
 .plate {
-  --bg: #F4F0E8; --raise: #FFFDF8; --panel: #E9E3D8; --panel2: #F8F4EC;
-  --rule: #D6CCBC; --rule2: #E7DED0;
-  --ink: #171513; --ink2: #625B52; --ink3: #80766A; --faint: #A79C8D;
-  --listen-tx: #8B6632; --speak-tx: #4D6A5B; --hold-tx: #8A6A36; --ok-tx: #4D7659;
-  --sh-sm: 0 1px 2px rgba(20,30,45,.06), 0 1px 1px rgba(20,30,45,.04);
-  --sh-md: 0 2px 6px rgba(20,30,45,.06), 0 10px 24px -10px rgba(20,30,45,.18);
-  --sh-lg: 0 3px 8px rgba(20,30,45,.05), 0 22px 48px -18px rgba(20,30,45,.24);
+  --bg: #F8FAFC; --raise: #FFFFFF; --panel: #F1F5F9; --panel2: #E2E8F0;
+  --rule: #CBD5E1; --rule2: #E2E8F0;
+  --ink: #0F172A; --ink2: #475569; --ink3: #64748B; --faint: #94A3B8;
+  --listen-tx: #4F46E5; --speak-tx: #0284C7; --hold-tx: #D97706; --ok-tx: #059669;
+  --sh-sm: 0 1px 2px rgba(15,23,42,.06), 0 1px 1px rgba(15,23,42,.04);
+  --sh-md: 0 2px 6px rgba(15,23,42,.06), 0 10px 24px -10px rgba(15,23,42,.15);
+  --sh-lg: 0 3px 8px rgba(15,23,42,.05), 0 22px 48px -18px rgba(15,23,42,.2);
 }
 
 /* ════════════════ DARK ════════════════ */
 :root[data-theme="dark"],
 .plate.dk,
 .dk {
-  --bg: #11100F; --raise: #1C1A17; --panel: #171513; --panel2: #24211D;
-  --rule: #4A4238; --rule2: #302B25;
-  --ink: #F4EEE3; --ink2: #BEB3A1; --ink3: #968B7B; --faint: #6F665B;
-  --listen-tx: #D1AF72; --speak-tx: #B7C8BC; --hold-tx: #E1C58D; --ok-tx: #9BBFA6;
-  --sh-sm: 0 1px 2px rgba(0,0,0,.4);
-  --sh-md: 0 10px 24px -10px rgba(0,0,0,.6);
-  --sh-lg: 0 22px 48px -18px rgba(0,0,0,.7);
+  --bg: #090B10; --raise: #141824; --panel: #0E121B; --panel2: #1B2232;
+  --rule: #232B3E; --rule2: #181E2C;
+  --ink: #F8FAFC; --ink2: #94A3B8; --ink3: #64748B; --faint: #475569;
+  --listen-tx: #818CF8; --speak-tx: #38BDF8; --hold-tx: #FBBF24; --ok-tx: #34D399;
+  --sh-sm: 0 1px 3px rgba(0,0,0,.45);
+  --sh-md: 0 10px 24px -10px rgba(0,0,0,.65);
+  --sh-lg: 0 22px 48px -18px rgba(0,0,0,.75);
 }
 
 /* ════════════════ CONSOLE (FounderOS port, optional) ════════════════

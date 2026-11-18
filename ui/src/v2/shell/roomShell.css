@@ -272,29 +272,29 @@ button.rs-chip:hover { color: var(--ink); border-color: var(--ink3); }
 .rshell[data-state="speaking"]  .rs-peb .rs-stl { color: var(--speak-tx); }
 .rshell[data-state="asking"]    .rs-peb .rs-stl { color: var(--hold-tx); }
 
-/* glass drop — ported from the design's .gd */
-.gdrop { position: relative; width: 42px; height: 42px; border-radius: 50%; transform: none; overflow: hidden;
-  background: rgba(255,255,255,.1); border: .5px solid rgba(255,255,255,.55);
-  -webkit-backdrop-filter: blur(2px) brightness(1.04) saturate(1.15); backdrop-filter: blur(2px) brightness(1.04) saturate(1.15);
+/* circular signal pebble */
+.gdrop { position: relative; width: 42px; height: 42px; border-radius: 50% !important; aspect-ratio: 1 / 1; transform: none; overflow: hidden;
+  background: rgba(99,102,241,.12); border: 1px solid rgba(99,102,241,.45);
+  -webkit-backdrop-filter: blur(4px) brightness(1.05) saturate(1.2); backdrop-filter: blur(4px) brightness(1.05) saturate(1.2);
   box-shadow: inset 1.5px 1.5px 1.5px rgba(255,255,255,.92), inset -1px -1px 2px rgba(255,255,255,.4), 0 4px 14px -3px rgba(20,30,45,.3);
   transition: border .3s, background .3s; }
-.rs-peb:hover .gdrop { box-shadow: inset 1.5px 1.5px 1.5px rgba(255,255,255,.92), inset -1px -1px 2px rgba(255,255,255,.4), 0 6px 18px -4px rgba(20,30,45,.4); }
-.gdrop .in { position: absolute; inset: 0; border-radius: inherit; opacity: 0; }
-.gdrop .ring { position: absolute; inset: -2px; border-radius: inherit; opacity: 0;
+.rs-peb:hover .gdrop { box-shadow: inset 1.5px 1.5px 1.5px rgba(255,255,255,.92), inset -1px -1px 2px rgba(255,255,255,.4), 0 6px 18px -4px rgba(99,102,241,.45); }
+.gdrop .in { position: absolute; inset: 0; border-radius: 50% !important; opacity: 0; }
+.gdrop .ring { position: absolute; inset: -2px; border-radius: 50% !important; opacity: 0;
   background: conic-gradient(from 0deg, transparent 0 200deg, rgba(255,255,255,.98) 300deg, transparent 360deg);
   -webkit-mask: radial-gradient(circle, transparent 38%, #000 45%, #000 56%, transparent 63%);
   mask: radial-gradient(circle, transparent 38%, #000 45%, #000 56%, transparent 63%); }
 @keyframes rs-br { 0%,100% { opacity: .55 } 50% { opacity: 1 } }
 @keyframes rs-brS { 0%,100% { opacity: .7; transform: scale(.94) } 50% { opacity: 1; transform: scale(1.04) } }
 @keyframes rs-spin { to { transform: rotate(360deg) } }
-@keyframes rs-askGlow { 0%,100% { box-shadow: inset 1.5px 1.5px 1.5px rgba(255,255,255,.92), 0 0 0 0 rgba(234,164,14,.45), 0 4px 14px -3px rgba(20,30,45,.3) } 50% { box-shadow: inset 1.5px 1.5px 1.5px rgba(255,255,255,.92), 0 0 0 7px rgba(234,164,14,0), 0 4px 14px -3px rgba(20,30,45,.3) } }
-.rshell[data-state="listening"] .gdrop.live .in { opacity: 1; animation: rs-br 1.4s infinite; background: radial-gradient(circle, rgba(230,59,46,.92), rgba(230,59,46,.28) 55%, transparent 72%); }
-.rshell[data-state="speaking"]  .gdrop.live .in { opacity: 1; animation: rs-brS 1.6s infinite; background: radial-gradient(circle, rgba(45,120,255,1), rgba(45,120,255,.5) 48%, transparent 72%); }
+@keyframes rs-askGlow { 0%,100% { box-shadow: inset 1.5px 1.5px 1.5px rgba(255,255,255,.92), 0 0 0 0 rgba(245,158,11,.5), 0 4px 14px -3px rgba(20,30,45,.3) } 50% { box-shadow: inset 1.5px 1.5px 1.5px rgba(255,255,255,.92), 0 0 0 7px rgba(245,158,11,0), 0 4px 14px -3px rgba(20,30,45,.3) } }
+.rshell[data-state="listening"] .gdrop.live .in { opacity: 1; animation: rs-br 1.4s infinite; background: radial-gradient(circle, rgba(99,102,241,.95), rgba(99,102,241,.3) 55%, transparent 72%); }
+.rshell[data-state="speaking"]  .gdrop.live .in { opacity: 1; animation: rs-brS 1.6s infinite; background: radial-gradient(circle, rgba(56,189,248,1), rgba(6,182,212,.45) 48%, transparent 72%); }
 .rshell[data-state="thinking"]  .gdrop.live .ring { opacity: 1; animation: rs-spin 1.4s linear infinite; }
-.rshell[data-state="asking"]    .gdrop.live .in { opacity: 1; animation: rs-br 2s infinite; background: radial-gradient(circle, rgba(234,164,14,.85), rgba(234,164,14,.25) 55%, transparent 72%); }
+.rshell[data-state="asking"]    .gdrop.live .in { opacity: 1; animation: rs-br 2s infinite; background: radial-gradient(circle, rgba(245,158,11,.9), rgba(245,158,11,.25) 55%, transparent 72%); }
 .rshell[data-state="asking"]    .gdrop.live { animation: rs-askGlow 2s var(--ease) infinite; }
-.rshell[data-state="muted"]     .gdrop.live { border: 1px dashed rgba(140,150,162,.85); background: rgba(225,230,238,.38); }
-.rshell[data-state="muted"]     .gdrop.live .in { opacity: 1; background: linear-gradient(135deg, transparent 46.5%, rgba(120,128,138,.75) 46.5% 53.5%, transparent 53.5%); }
+.rshell[data-state="muted"]     .gdrop.live { border: 1px dashed rgba(148,163,184,.85); background: rgba(30,41,59,.38); }
+.rshell[data-state="muted"]     .gdrop.live .in { opacity: 1; background: linear-gradient(135deg, transparent 46.5%, rgba(148,163,184,.75) 46.5% 53.5%, transparent 53.5%); }
 
 /* ───────────────────────── Talk panel ───────────────────────── */
 .rs-talk {

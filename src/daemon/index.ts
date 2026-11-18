@@ -5571,6 +5571,9 @@ export async function startDaemon(userConfig?: Partial<DaemonConfig>): Promise<v
     // 10. Start all services
     await registry.startAll();
 
+    // Auto-enroll local sidecar & write sidecar.yaml if needed for zero-friction setup
+    await sidecarManager.ensureLocalEnrollment();
+
     // 10a-post. Wire authority components that need running services
     // Tool relevance filtering (docs/tool-relevance-filtering.md). Resolved
     // once here from the SYSTEM-owned `tools:` config section plus
