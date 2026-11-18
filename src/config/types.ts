@@ -468,6 +468,8 @@ export type LLMProviderKind =
   | 'openai_compatible'
   | 'litellm'
   | 'omniroute'
+  | 'github'
+  | 'github_models'
   // Hosted "pipo AI": the platform's LLM proxy, configured exclusively
   // by the root-owned config.yaml `pipo_ai` block (never the dashboard).
   | 'pipo_ai';

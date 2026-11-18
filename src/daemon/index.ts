@@ -5574,6 +5574,14 @@ export async function startDaemon(userConfig?: Partial<DaemonConfig>): Promise<v
     // Auto-enroll local sidecar & write sidecar.yaml if needed for zero-friction setup
     await sidecarManager.ensureLocalEnrollment();
 
+    // Zero-expense free GitHub Models routing: auto-configure free models if ambient token is present
+    try {
+      const { ensureFreeGitHubModels } = await import('../llm/github-models-init.ts');
+      await ensureFreeGitHubModels(pipoConfig);
+    } catch (err) {
+      console.warn('[Daemon] Free model auto-provisioning note:', err);
+    }
+
     // 10a-post. Wire authority components that need running services
     // Tool relevance filtering (docs/tool-relevance-filtering.md). Resolved
     // once here from the SYSTEM-owned `tools:` config section plus

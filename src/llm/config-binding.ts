@@ -29,6 +29,7 @@ import { OpenAICompatibleProvider } from './openai-compatible.ts';
 import { LiteLLMProvider } from './litellm.ts';
 import { OmniRouteProvider } from './omniroute.ts';
 import { pipoAIProvider } from './pipo.ts';
+import { GitHubModelsProvider, discoverAmbientGitHubToken } from './github-models.ts';
 
 /**
  * Instantiate a provider class from a single entry. Returns null when the
@@ -107,6 +108,13 @@ export function instantiateProvider(
     case 'omniroute':
       provider = new OmniRouteProvider(entry.base_url?.trim() || undefined, undefined, entry.api_key, entry.auth_header);
       break;
+    case 'github':
+    case 'github_models': {
+      const apiKey = entry.api_key?.trim() || discoverAmbientGitHubToken();
+      if (!apiKey) return null;
+      provider = new GitHubModelsProvider(apiKey, entry.base_url);
+      break;
+    }
     case 'pipo_ai':
       // Hosted platform proxy: both values come from the system-owned
       // config.yaml block (daemon/pipo-ai.ts) - nothing to guess.

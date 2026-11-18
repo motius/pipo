@@ -109,8 +109,15 @@ if (-not (Test-Path $cfgFile)) {
     @"
 auth:
   insecure_open_access: true
+llm:
+  default_provider: github
+  providers:
+    github:
+      kind: github
+      base_url: "https://models.inference.ai.azure.com"
 "@ | Set-Content -Path $cfgFile -Encoding utf8
     Info "Configured instant dashboard access (zero-friction setup)"
+    Info "Free GitHub Models routing enabled: $0 API expense (gpt-4o, gpt-4o-mini, llama-3.3-70b)"
 }
 
 # Auto-enroll desktop device and preconfigure sidecar.yaml
@@ -150,7 +157,11 @@ capabilities:
 
 # ── 5. Launch & Finish ──────────────────────────────────────────────
 Write-Host ""
-Write-Host "  ============== P.I.P.O. is Ready! ==============" -ForegroundColor Green
+Write-Host "  ============== Ignatius / P.I.P.O. is Ready! ==============" -ForegroundColor Green
+Write-Host "  [+] Ultron APEX-UI Cybernetic Engine active" -ForegroundColor Cyan
+Write-Host "  [+] Free GitHub AI Models reroute active ($0 API cost)" -ForegroundColor Cyan
+Write-Host "  [+] Autonomous Internet Self-Learning tool ready" -ForegroundColor Cyan
+Write-Host ""
 Write-Host "  Opening dashboard at http://localhost:1846..."
 Start-Process "http://localhost:1846" -ErrorAction SilentlyContinue
 

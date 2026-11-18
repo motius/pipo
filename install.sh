@@ -402,13 +402,20 @@ main() {
   echo -e "    ${DIM}→ http://localhost:1846 (dashboard guides you through LLM, voice, and profile)${RESET}"
   echo ""
 
-  # Pre-configure zero-friction dashboard setup if config.yaml doesn't exist
+  # Pre-configure zero-friction dashboard setup and free GitHub models if config.yaml doesn't exist
   mkdir -p "$HOME/.pipo"
   if [ ! -f "$HOME/.pipo/config.yaml" ]; then
     cat << 'EOF' > "$HOME/.pipo/config.yaml"
 auth:
   insecure_open_access: true
+llm:
+  default_provider: github
+  providers:
+    github:
+      kind: github
+      base_url: "https://models.inference.ai.azure.com"
 EOF
+    ok "Configured free GitHub AI models routing ($0 expense)"
   fi
 
   # ── One-click start ──────────────────────────────────────────────

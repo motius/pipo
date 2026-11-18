@@ -35,6 +35,7 @@ import { UI_TOOLS } from './ui.ts';
 import { SKILL_TOOLS } from './skills.ts';
 import { LEARNED_COMMAND_TOOLS } from './learned-commands.ts';
 import { WATCHER_TOOLS } from './watchers.ts';
+import { selfLearnTool } from './self-learn.ts';
 
 const terminal = new TerminalExecutor({ timeout: 30000 });
 
@@ -1786,6 +1787,7 @@ export const BUILTIN_TOOLS: ToolDefinition[] = [
   ...SKILL_TOOLS,
   ...LEARNED_COMMAND_TOOLS,
   ...WATCHER_TOOLS,
+  selfLearnTool,
 ];
 
 /**

@@ -39,6 +39,7 @@ import { isAnthropicCustomBaseUrl } from '../llm/anthropic.ts';
 import { GROQ_DEPRECATED_MODEL_REPLACEMENTS } from '../llm/groq-models.ts';
 import { NVIDIA_RETIRED_MODEL_REPLACEMENTS } from '../llm/nvidia-models.ts';
 import { TIERS, type Tier, parseModelRef } from '../llm/tiers.ts';
+import { discoverAmbientGitHubToken } from '../llm/github-models.ts';
 
 // ── DB keys ──────────────────────────────────────────────────────────────
 const SETTING_PROVIDERS = 'llm.providers';
@@ -183,6 +184,7 @@ export const AVAILABLE_KINDS: LLMProviderKind[] = [
   'openai_compatible',
   'litellm',
   'omniroute',
+  'github',
 ];
 
 // ── getLLMSettings ───────────────────────────────────────────────────────
@@ -198,9 +200,10 @@ export function getLLMSettings(config: pipoConfig): LLMSettingsResponse {
     // `pipo_ai` before the reservation existed still owns that entry.
     if (name === pipo_PROVIDER_NAME && haspipoAi(config)) continue;
     const kind = (entry.kind ?? name) as LLMProviderKind;
+    const hasKey = hasSecret(keychainKey(name)) || Boolean(entry.api_key) || (kind === 'github' && Boolean(discoverAmbientGitHubToken()));
     providers[name] = {
       kind,
-      has_api_key: hasSecret(keychainKey(name)) || Boolean(entry.api_key),
+      has_api_key: hasKey,
       ...(entry.base_url ? { base_url: entry.base_url } : {}),
       ...(entry.auth_header ? { auth_header: entry.auth_header } : {}),
     };

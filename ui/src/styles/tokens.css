@@ -41,10 +41,19 @@
   --sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
   --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
+  /* ── Ultron / Iron Man Cybernetic HUD tokens ── */
+  --ultron-core: #FF1E44;
+  --ultron-core-glow: rgba(255, 30, 68, 0.45);
+  --ultron-scarlet: #FF1E44;
+  --ultron-crimson: #B3001E;
+  --ultron-amber: #FF9900;
+  --ultron-dark: #05060A;
+  --ultron-hud-border: rgba(255, 30, 68, 0.3);
+
   /* ── state hues · modern vibrant chroma ── */
-  --listen: #6366F1;   /* electric indigo · attention */
+  --listen: #FF1E44;   /* ultron scarlet · attention */
   --speak:  #06B6D4;   /* vivid cyan · running */
-  --hold:   #F59E0B;   /* amber gold · awaiting your yes */
+  --hold:   #FF9900;   /* amber gold · awaiting your yes */
   --ok:     #10B981;   /* fresh emerald · done */
 
   /* ── dark-scene exterior ── */

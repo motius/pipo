@@ -106,8 +106,47 @@ export function Pebble() {
         onClick={() => setState((s) => (s === "idle" ? "listening" : "idle"))}
         role="button"
         tabIndex={0}
-        aria-label="Pipo Pebble"
+        aria-label="Ignatius Ultron Core"
       >
+        {/* Ultron / APEX-UI Cybernetic Precision HUD */}
+        <svg className="pebble-hud-svg" viewBox="0 0 100 100" aria-hidden="true">
+          {/* Outer Compass & Tick Ring */}
+          <circle cx="50" cy="50" r="47" className="hud-ring hud-ring-outer" />
+          <circle cx="50" cy="50" r="44" className="hud-ring hud-ring-track" />
+          <circle cx="50" cy="50" r="41" className="hud-ring hud-ring-radar" />
+
+          {/* Compass Ticks (12 precision markers) */}
+          {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((deg) => (
+            <line
+              key={deg}
+              x1="50"
+              y1="3"
+              x2="50"
+              y2={deg % 90 === 0 ? "8" : "6"}
+              transform={`rotate(${deg} 50 50)`}
+              className={`hud-tick ${deg % 90 === 0 ? "hud-tick-cardinal" : ""}`}
+            />
+          ))}
+
+          {/* Concentric Audio Waveform Rings */}
+          <circle cx="50" cy="50" r="36" className="hud-ring hud-wave hud-wave-1" />
+          <circle cx="50" cy="50" r="31" className="hud-ring hud-wave hud-wave-2" />
+
+          {/* Orbiting Agent Constellation Nodes (APEX Reasoning Web) */}
+          <g className="hud-orbit-web">
+            <circle cx="50" cy="18" r="2.2" className="hud-node hud-node-1" />
+            <circle cx="78" cy="38" r="1.8" className="hud-node hud-node-2" />
+            <circle cx="70" cy="74" r="2.0" className="hud-node hud-node-3" />
+            <circle cx="30" cy="74" r="1.8" className="hud-node hud-node-4" />
+            <circle cx="22" cy="38" r="2.2" className="hud-node hud-node-5" />
+          </g>
+
+          {/* Ultron Core Arc Reactor Center */}
+          <circle cx="50" cy="50" r="24" className="hud-core-halo" />
+          <circle cx="50" cy="50" r="18" className="hud-core-reactor" />
+          <circle cx="50" cy="50" r="7" className="hud-core-pupil" />
+        </svg>
+
         <span className="gd">
           <span className="in" />
           <span className="ring" />
@@ -117,7 +156,10 @@ export function Pebble() {
       {showBubble && (
         <div ref={bubbleRef} className="pebble-thread">
           <div className="thread-header">
-            <span>Thread</span>
+            <span className="thread-title">
+              <span className="thread-hud-badge">ULTRON</span>
+              IGNATIUS CORE
+            </span>
             <button
               type="button"
               className="thread-dismiss"
@@ -127,7 +169,7 @@ export function Pebble() {
             </button>
           </div>
           <div className="thread-body">
-            <span className="thread-from">pipo</span>
+            <span className="thread-from">Ignatius</span>
             speaking…
           </div>
           <div className="thread-actions">
