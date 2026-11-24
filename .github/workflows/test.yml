@@ -232,7 +232,7 @@ jobs:
       X_HOTKEY_TEST_COUNT: '8'
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-go@v7
+      - uses: actions/setup-go@v7.1.0
         with:
           # Single source of truth for the toolchain — tracks sidecar/go.mod so
           # the build gate can't drift from the declared Go version (GO_VERSION
@@ -590,7 +590,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-go@v7
+      - uses: actions/setup-go@v7.1.0
         with:
           go-version-file: sidecar/go.mod
           cache-dependency-path: sidecar/go.sum
@@ -659,7 +659,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-go@v7
+      - uses: actions/setup-go@v7.1.0
         with:
           go-version-file: sidecar/go.mod
           cache-dependency-path: sidecar/go.sum
